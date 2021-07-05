@@ -1,20 +1,28 @@
 package qna.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class DeleteHistory {
-    private Long id;
+@Entity
+@AttributeOverride(name = "id", column = @Column(name = "delete_history_id"))
+public class DeleteHistory extends BaseEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by_id", foreignKey = @ForeignKey(name = "fk_delete_history_to_user"))
+    private User deletedByUser;
+
+    @Enumerated(EnumType.STRING)
     private ContentType contentType;
     private Long contentId;
-    private Long deletedById;
-    private LocalDateTime createDate = LocalDateTime.now();
 
-    public DeleteHistory(ContentType contentType, Long contentId, Long deletedById, LocalDateTime createDate) {
+    protected DeleteHistory() {
+    }
+
+    public DeleteHistory(ContentType contentType, Long contentId, User deletedByUser) {
         this.contentType = contentType;
         this.contentId = contentId;
-        this.deletedById = deletedById;
-        this.createDate = createDate;
+        this.deletedByUser = deletedByUser;
     }
 
     @Override
@@ -22,25 +30,22 @@ public class DeleteHistory {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DeleteHistory that = (DeleteHistory) o;
-        return Objects.equals(id, that.id) &&
-                contentType == that.contentType &&
-                Objects.equals(contentId, that.contentId) &&
-                Objects.equals(deletedById, that.deletedById);
+        return contentType == that.contentType && Objects.equals(contentId, that.contentId) && Objects.equals(deletedByUser, that.deletedByUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, contentType, contentId, deletedById);
+        return Objects.hash(contentType, contentId, deletedByUser);
     }
 
     @Override
     public String toString() {
         return "DeleteHistory{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", contentType=" + contentType +
                 ", contentId=" + contentId +
-                ", deletedById=" + deletedById +
-                ", createDate=" + createDate +
+                ", deletedByUser=" + deletedByUser +
+                ", createDate=" + super.getCreatedDate() +
                 '}';
     }
 }

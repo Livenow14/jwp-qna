@@ -1,41 +1,53 @@
 package qna.domain;
 
-public class Question {
-    private Long id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@AttributeOverride(name = "id", column = @Column(name = "question_id"))
+public class Question extends BaseEntity {
+
+    @OneToOne
+    @JoinColumn(name = "writer_id")
+    private User writer;
+
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers = new ArrayList<>();
+
+    @Column(nullable = false, length = 100)
     private String title;
+
+    @Lob
     private String contents;
-    private Long writerId;
+
     private boolean deleted = false;
+
+    protected Question() {
+    }
 
     public Question(String title, String contents) {
         this(null, title, contents);
     }
 
     public Question(Long id, String title, String contents) {
-        this.id = id;
+        super.changeId(id);
         this.title = title;
         this.contents = contents;
     }
 
     public Question writeBy(User writer) {
-        this.writerId = writer.getId();
+        this.writer = writer;
         return this;
     }
 
     public boolean isOwner(User writer) {
-        return this.writerId.equals(writer.getId());
+        return this.writer.equals(writer);
     }
 
     public void addAnswer(Answer answer) {
         answer.toQuestion(this);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -54,12 +66,12 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getWriterId() {
-        return writerId;
+    public User getWriter() {
+        return writer;
     }
 
-    public void setWriterId(Long writerId) {
-        this.writerId = writerId;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public boolean isDeleted() {
@@ -71,12 +83,25 @@ public class Question {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Question question = (Question) o;
+        return Objects.equals(this.getId(), question.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(writer);
+    }
+
+    @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", writerId=" + writerId +
+                ", writer=" + writer +
                 ", deleted=" + deleted +
                 '}';
     }

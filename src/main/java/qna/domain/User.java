@@ -1,35 +1,46 @@
 package qna.domain;
 
-import qna.UnAuthorizedException;
+import qna.common.UnAuthorizedException;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.util.Objects;
 
-public class User {
+@Entity
+@AttributeOverride(name = "id", column = @Column(name = "user_id"))
+public class User extends BaseEntity{
     public static final GuestUser GUEST_USER = new GuestUser();
 
-    private Long id;
-    private String userId;
+    @Column(length = 20, nullable = false)
+    private String account;
+
+    @Column(length = 20, nullable = false)
     private String password;
+
+    @Column(length = 20, nullable = false)
     private String name;
+
+    @Column(length = 50)
     private String email;
 
-    private User() {
+    protected User() {
     }
 
-    public User(String userId, String password, String name, String email) {
-        this(null, userId, password, name, email);
+    public User(String account, String password, String name, String email) {
+        this(null, account, password, name, email);
     }
 
-    public User(Long id, String userId, String password, String name, String email) {
-        this.id = id;
-        this.userId = userId;
+    public User(Long id, String account, String password, String name, String email) {
+        super.changeId(id);
+        this.account = account;
         this.password = password;
         this.name = name;
         this.email = email;
     }
 
     public void update(User loginUser, User target) {
-        if (!matchUserId(loginUser.userId)) {
+        if (!matchUser(loginUser.account)) {
             throw new UnAuthorizedException();
         }
 
@@ -41,8 +52,8 @@ public class User {
         this.email = target.email;
     }
 
-    private boolean matchUserId(String userId) {
-        return this.userId.equals(userId);
+    private boolean matchUser(String account) {
+        return this.account.equals(account);
     }
 
     public boolean matchPassword(String targetPassword) {
@@ -62,20 +73,12 @@ public class User {
         return false;
     }
 
-    public Long getId() {
-        return id;
+    public String getAccount() {
+        return account;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setAccount(String userId) {
+        this.account = userId;
     }
 
     public String getPassword() {
@@ -105,8 +108,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", userId='" + userId + '\'' +
+                "id=" + super.getId() +
+                ", userId='" + account + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

@@ -1,4 +1,4 @@
-package qna;
+package qna.common;
 
 public class ForbiddenException extends RuntimeException {
     public ForbiddenException() {
