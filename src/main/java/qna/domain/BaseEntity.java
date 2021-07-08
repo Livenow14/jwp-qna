@@ -37,8 +37,4 @@ public abstract class BaseEntity {
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
 }

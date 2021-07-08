@@ -11,7 +11,7 @@ import java.util.Objects;
 @AttributeOverride(name = "id", column = @Column(name = "question_id"))
 public class Question extends BaseEntity {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "writer_id")
     private User writer;
 
@@ -57,16 +57,8 @@ public class Question extends BaseEntity {
         return writer;
     }
 
-    public Answers answers() {
-        return answers;
-    }
-
     public String title() {
         return title;
-    }
-
-    public String contents() {
-        return contents;
     }
 
     public boolean isDeleted() {
