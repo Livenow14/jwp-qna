@@ -4,19 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import qna.common.CannotDeleteException;
 import qna.common.NotFoundException;
-import qna.domain.*;
+import qna.domain.DeleteHistory;
+import qna.domain.Question;
+import qna.domain.QuestionRepository;
+import qna.domain.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class QnaService {
     private static final Logger log = LoggerFactory.getLogger(QnaService.class);
 
-    private QuestionRepository questionRepository;
-    private DeleteHistoryService deleteHistoryService;
+    private final QuestionRepository questionRepository;
+    private final DeleteHistoryService deleteHistoryService;
 
     public QnaService(QuestionRepository questionRepository, DeleteHistoryService deleteHistoryService) {
         this.questionRepository = questionRepository;

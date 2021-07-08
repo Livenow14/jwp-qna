@@ -16,7 +16,7 @@ public class Question extends BaseEntity {
     private User writer;
 
     @Embedded
-    private Answers answers = new Answers();
+    private final Answers answers = new Answers();
 
     @Column(nullable = false, length = 100)
     private String title;

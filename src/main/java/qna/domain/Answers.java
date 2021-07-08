@@ -13,8 +13,8 @@ import java.util.Optional;
 public class Answers {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
-    private List<Answer> answers = new ArrayList<>();
-    
+    private final List<Answer> answers = new ArrayList<>();
+
     protected Answers() {
     }
 
