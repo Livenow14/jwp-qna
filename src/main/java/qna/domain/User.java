@@ -1,5 +1,6 @@
 package qna.domain;
 
+import qna.common.AlreadyAllocateException;
 import qna.common.UnAuthorizedException;
 
 import javax.persistence.AttributeOverride;
@@ -40,6 +41,16 @@ public class User extends BaseEntity {
     }
 
     public void update(User loginUser, User target) {
+        validateUser(loginUser, target);
+        this.name = target.name;
+        this.email = target.email;
+    }
+
+    private void validateUser(User loginUser, User target) {
+        if (isGuestUser()) {
+            throw new UnAuthorizedException();
+        }
+
         if (!matchUser(loginUser.account)) {
             throw new UnAuthorizedException();
         }
@@ -47,9 +58,6 @@ public class User extends BaseEntity {
         if (!matchPassword(target.password)) {
             throw new UnAuthorizedException();
         }
-
-        this.name = target.name;
-        this.email = target.email;
     }
 
     private boolean matchUser(String account) {
@@ -60,17 +68,35 @@ public class User extends BaseEntity {
         return this.password.equals(targetPassword);
     }
 
-    public boolean equalsNameAndEmail(User target) {
-        if (Objects.isNull(target)) {
-            return false;
+    public void changePassword(String password) {
+        if (isGuestUser()) {
+            throw new UnAuthorizedException();
         }
 
-        return name.equals(target.name) &&
-                email.equals(target.email);
+        if (matchPassword(password)) {
+            throw new AlreadyAllocateException("동일한 비밀번호입니다");
+        }
+        this.password = password;
     }
 
     public boolean isGuestUser() {
         return false;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override
