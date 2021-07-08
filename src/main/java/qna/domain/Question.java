@@ -72,7 +72,10 @@ public class Question extends BaseEntity {
         this.deleted = true;
     }
 
-    public List<DeleteHistory> toDeleteHistory() {
+    public List<DeleteHistory> toDeleteHistory() throws Exception {
+        if (!deleted) {
+            throw new CannotDeleteException("삭제되지 않은 질문입니다.");
+        }
         return answers.toDeleteHistory(this.getId(), this.writer);
     }
 
