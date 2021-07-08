@@ -1,7 +1,9 @@
 package qna.domain;
 
+import qna.common.AlreadyAllocateException;
+import qna.common.CannotDeleteException;
+
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,8 +15,8 @@ public class Question extends BaseEntity {
     @JoinColumn(name = "writer_id")
     private User writer;
 
-    @OneToMany(mappedBy = "question")
-    private List<Answer> answers = new ArrayList<>();
+    @Embedded
+    private Answers answers = new Answers();
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -42,44 +44,40 @@ public class Question extends BaseEntity {
         return this;
     }
 
-    public boolean isOwner(User writer) {
-        return this.writer.equals(writer);
+    public void deleteAnswers() throws Exception {
+        answers.deleteAnswers(writer);
     }
 
     public void addAnswer(Answer answer) {
         answer.toQuestion(this);
+        this.answers.toAnswer(answer);
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContents() {
-        return contents;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
-    public User getWriter() {
+    public User writer() {
         return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
     }
 
     public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void toDeleted(User loginUser) throws Exception {
+        if (!isOwner(loginUser)) {
+            throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
+        }
+
+        if (deleted) {
+            throw new AlreadyAllocateException("이미 삭제 처리된 질문입니다.");
+        }
+        this.deleted = true;
+    }
+
+    public List<DeleteHistory> toDeleteHistory() {
+        return answers.toDeleteHistory(this.getId(), this.writer);
+    }
+
+    public void removeAnswer(Answer answer) {
+        this.answers.removeAnswer(answer);
     }
 
     @Override
@@ -104,5 +102,9 @@ public class Question extends BaseEntity {
                 ", writer=" + writer +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    private boolean isOwner(User writer) {
+        return this.writer.equals(writer);
     }
 }

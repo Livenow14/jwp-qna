@@ -51,38 +51,21 @@ public class Answer extends BaseEntity {
     }
 
     public void toQuestion(Question question) {
+        if (Objects.nonNull(this.question)) {
+            this.question.removeAnswer(this);
+        }
         this.question = question;
     }
 
-    public User getWriter() {
+    public User writer() {
         return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public String getContents() {
-        return contents;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
     }
 
     public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void toDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 

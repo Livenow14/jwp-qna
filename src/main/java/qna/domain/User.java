@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     public static final GuestUser GUEST_USER = new GuestUser();
 
     @Column(length = 20, nullable = false)
@@ -114,6 +114,18 @@ public class User extends BaseEntity{
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        User user = (User) o;
+        return Objects.equals(this.getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(account, password, name, email);
     }
 
     private static class GuestUser extends User {
