@@ -40,7 +40,7 @@ public class Answers {
         return deleteHistories;
     }
 
-    public void toAnswer(Answer answer) {
+    public void addAnswer(Answer answer) {
         this.answers.add(answer);
     }
 

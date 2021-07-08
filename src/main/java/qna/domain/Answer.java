@@ -61,6 +61,14 @@ public class Answer extends BaseEntity {
         return writer;
     }
 
+    public Question question() {
+        return question;
+    }
+
+    public String contents() {
+        return contents;
+    }
+
     public boolean isDeleted() {
         return deleted;
     }

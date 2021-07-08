@@ -50,11 +50,23 @@ public class Question extends BaseEntity {
 
     public void addAnswer(Answer answer) {
         answer.toQuestion(this);
-        this.answers.toAnswer(answer);
+        this.answers.addAnswer(answer);
     }
 
     public User writer() {
         return writer;
+    }
+
+    public Answers answers() {
+        return answers;
+    }
+
+    public String title() {
+        return title;
+    }
+
+    public String contents() {
+        return contents;
     }
 
     public boolean isDeleted() {

@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static qna.domain.AnswerTest.A1;
 
 @ExtendWith(MockitoExtension.class)
 class QnaServiceTest {
@@ -33,9 +34,9 @@ class QnaServiceTest {
     private Answer answer;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         question = new Question(1L, "title1", "contents1").writeBy(UserTest.JAVAJIGI);
-        answer = new Answer(1L, UserTest.JAVAJIGI, question, "Answers Contents1");
+        answer = new Answer(A1.getId(), A1.writer(), A1.question(), A1.contents());
         question.addAnswer(answer);
     }
 
@@ -70,7 +71,7 @@ class QnaServiceTest {
     }
 
     @Test
-    public void delete_답변_중_다른_사람이_쓴_글() throws Exception {
+    public void delete_답변_중_다른_사람이_쓴_글() {
         Answer answer2 = new Answer(2L, UserTest.SANJIGI, QuestionTest.Q1, "Answers Contents1");
         question.addAnswer(answer2);
 
